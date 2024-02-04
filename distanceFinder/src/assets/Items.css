@@ -1,0 +1,16 @@
+table{
+    width:100%;
+    font-size:1.5em;
+}
+tbody{
+    text-align: center;
+}
+table, td, th {
+    border: 1px solid;
+}
+caption{
+    margin-bottom: 0.5em;
+}
+.tableContainer{
+    padding-bottom: 2rem;
+}

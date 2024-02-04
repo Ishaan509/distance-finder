@@ -1,0 +1,14 @@
+h1{
+    margin: 0;
+    padding: 1rem;
+  }
+header{
+font-family: 'Protest Riot', sans-serif;
+text-align: center;
+background-color: #068FFF;
+color:#E5E1DA;
+border-radius: 0 0 1rem 1rem;
+top:0;
+left:0;
+right:0;
+}

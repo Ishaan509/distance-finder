@@ -1,0 +1,43 @@
+#statesDistricts{
+    padding: 1em;
+    margin: 1rem;
+    display:flex;
+    flex-direction: column;
+    font-family: 'Lato', sans-serif;
+}
+#stateLabel{
+    margin-left: 1em;
+}
+#stateComponent{
+    display: flex;
+    flex-direction: column;
+    margin:1em;
+    justify-content: space-evenly;
+}
+#state{
+    background-color: #4d5061;
+    color: #ffffff;
+    font-size: 1rem;
+    box-shadow: 0px 10px 25px rgb(0,0,0,0.5);
+    appearance: none;
+    padding:0.5em;
+    margin:1em;
+    width: 30vw;
+}
+
+#state option:hover{
+    background-color: #737373;
+}
+
+@media(width <= 600px){
+    #state{
+        margin:1em;
+        width: 50vw;
+    }
+}
+@media(600px < width <= 1000px){
+    #state{
+        margin:1em;
+        width: 53vw;
+    }
+}

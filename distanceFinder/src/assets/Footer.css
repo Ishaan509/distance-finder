@@ -1,0 +1,15 @@
+h5{
+    margin: 0;
+    padding: 1rem;
+  }
+footer{
+text-align: center;
+background-color: #068FFF;
+color:#E5E1DA;
+position:fixed;
+left:0;
+bottom:0;
+right:0;
+font-style: serif;
+border-radius: 1rem 1rem 0 0 ;
+}
