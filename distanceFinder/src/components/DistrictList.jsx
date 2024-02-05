@@ -20,8 +20,7 @@ function DistrictList(props) {
 
     async function handleSubmit(){
         if(props.selectedValue != "Select" && SelDisValue != "Select"){
-
-            await axios.post('http://localhost:3000/api',{stateF:props.selectedValue, districtF:SelDisValue})
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/api',{stateF:props.selectedValue, districtF:SelDisValue})
             .then((response)=>{
                 setResult(response.data);
             })
