@@ -84,6 +84,6 @@ app.post("/api",async(req,res,next)=>{
     res.json({allDistrictWithDistance});
 });
 
-app.listen(3000,()=>{
-    console.log("Port 3000 active");
+app.listen(process.env.PORT || 3000,()=>{
+    console.log("Server up and running!!");
 });
