@@ -12,6 +12,9 @@ const app = express();
 connectMongo(process.env.MONGO_URI).then(()=>{console.log("MongoDB connected!");});
 
 //MIDDLEWARE
+if(process.env.FRONTEND_URL == undefined){
+    console.log(0);
+}
 app.use(handleRequestResponse());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
