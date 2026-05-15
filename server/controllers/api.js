@@ -1,4 +1,5 @@
 const districts_states = require("../models/districtsStates");
+const geoSpatial_district_states = require("../models/geoDistrictStates");
 
 
 async function apiGet (req,res,next){
@@ -57,6 +58,23 @@ function sortFunction(a, b) {
     else {
         return (a.distance < b.distance) ? -1 : 1;
     }
+}
+
+async function apiProximity(req,res,next){
+    
+    let proximityLoc = geoSpatial_district_states.find({
+        location:{
+            $near:{
+                $geometry:{ type:"Point", coordinates:[72.832678,19.054135]},
+                $minDistance:"100000",
+                $maxDistance: "500000"
+            }
+        }
+    });
+    
+    proximityLoc.then(val => {
+        console.log(val);
+    });
 }
 
 module.exports = {apiGet , apiPost};
