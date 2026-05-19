@@ -1,4 +1,4 @@
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import Items from './Items';
 import axios from 'axios';
 import '../assets/DistrictList.css';
@@ -6,65 +6,109 @@ import PropTypes from 'prop-types';
 
 function DistrictList(props) {
 
-    const [SelDisValue,setSelDisValue] = useState("Select");
-    const [Result,setResult] = useState({});
-    const [ResultCheck,setResultCheck] = useState(false);
+    const [SelDisValue, setSelDisValue] = useState("Select");
+    const [Result, setResult] = useState({});
+    const [ResultCheck, setResultCheck] = useState(false);
+    const [sliderEnabled, setSliderEnabled] = useState(false);
+    const [sliderValue, setSliderValue] = useState(0);
 
     const states = props.statesDis;
-    
 
-    function handleChange(event){
+    function handleChange(event) {
         let valueSelected = event.target.value;
         setSelDisValue(valueSelected);
     }
 
-    async function handleSubmit(){
-        if(props.selectedValue != "Select" && SelDisValue != "Select"){
-            await axios.post(import.meta.env.VITE_BACKEND_URL + '/api',{stateF:props.selectedValue, districtF:SelDisValue})
-            .then((response)=>{
-                setResult(response.data);
-            })
-            .catch((error)=>{
-                console.log(error);
-            })
+    function handleCheckboxChange(event) {
+        setSliderEnabled(event.target.checked);
+    }
+
+    function handleSliderChange(event) {
+        setSliderValue(Number(event.target.value));
+    }
+
+    async function handleSubmit() {
+        if (props.selectedValue != "Select" && SelDisValue != "Select") {
+            const payload = {
+                stateF: props.selectedValue,
+                districtF: SelDisValue,
+                sliderFlag: sliderEnabled,
+                ...(sliderEnabled && { sliderValue })
+            };
+
+            await axios.post(import.meta.env.VITE_BACKEND_URL + '/api', payload)
+                .then((response) => {
+                    setResult(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
             setResultCheck(true);
-        }else{
+        } else {
             setResultCheck(false);
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         setSelDisValue("Select");
         setResultCheck(false);
-    },[props.selectedValue])
+    }, [props.selectedValue]);
 
-    return(
+    return (
         <div>
-        <div id="Dlist" >
-            <h1>Selected District: {(props.selectedValue == "Select")? "Not Selected" : (SelDisValue == "Select")? "Not Selected" : SelDisValue}</h1>
-            <label id="districtLabel" htmlFor="district">Select District:</label>
-    
-            <select id="district" onChange={handleChange}>
-            <option id="0" value="Select">Select</option>
-                {(props.selectedValue == "Select")? null:
-                states.map((element)=>{
-                    const {state,districts} = element;
-                    if(state == props.selectedValue){
-                        return(
-                            districts.map((district,index)=>{
-                                return(<option key={index+1} id={index+1} value={district}>{district}</option>)
-                            })
-                        );
+            <div id="Dlist">
+                <h1>Selected District: {(props.selectedValue == "Select") ? "Not Selected" : (SelDisValue == "Select") ? "Not Selected" : SelDisValue}</h1>
+                <label id="districtLabel" htmlFor="district">Select District:</label>
+
+                <select id="district" onChange={handleChange}>
+                    <option id="0" value="Select">Select</option>
+                    {(props.selectedValue == "Select") ? null :
+                        states.map((element) => {
+                            const { state, districts } = element;
+                            if (state == props.selectedValue) {
+                                return (
+                                    districts.map((district, index) => {
+                                        return (<option key={index + 1} id={index + 1} value={district}>{district}</option>);
+                                    })
+                                );
+                            }
+                        })
                     }
-                })
-                }
-            </select>
+                </select>
 
-            <button className="buttonStyle" id="subButt" onClick={handleSubmit} > SUBMIT </button>
-        </div>
-        <div>
-            {(ResultCheck)? <Items districtwithdistances={Result} selDistrict={SelDisValue} /> : null }
-        </div>
+                {/* Checkbox to toggle slider */}
+                <div className="sliderToggle">
+                    <label htmlFor="sliderCheckbox">
+                        <input
+                            type="checkbox"
+                            id="sliderCheckbox"
+                            checked={sliderEnabled}
+                            onChange={handleCheckboxChange}
+                        />
+                        Enable Range
+                    </label>
+                </div>
+
+                {/* Slider — shown only when checkbox is checked */}
+                {sliderEnabled && (
+                    <div className="sliderContainer">
+                        <label htmlFor="rangeSlider">Range Value: {sliderValue}</label>
+                        <input
+                            type="range"
+                            id="rangeSlider"
+                            min={0}
+                            max={100}
+                            value={sliderValue}
+                            onChange={handleSliderChange}
+                        />
+                    </div>
+                )}
+
+                <button className="buttonStyle" id="subButt" onClick={handleSubmit}>SUBMIT</button>
+            </div>
+            <div>
+                {ResultCheck ? <Items districtwithdistances={Result} selDistrict={SelDisValue} /> : null}
+            </div>
         </div>
     );
 }
@@ -74,4 +118,4 @@ DistrictList.propTypes = {
     selectedValue: PropTypes.string
 }
 
-export default DistrictList
+export default DistrictList;
