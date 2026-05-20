@@ -20,34 +20,43 @@ async function apiPost (req,res,next){
     longitudeFrom = oneDist[0].lon;
 
     let allDistrictWithDistance=[];
+    if(req.body.payload.sliderFlag == true){
+        let data = {
+            ...req.body.payload,
+            latitudeFrom,
+            longitudeFrom
+        };
+        allDistrictWithDistance = apiProximity(data);
+    }else{        
+        allDistExceptOne.forEach((distLatLon)=>{
+            latitudeTo = distLatLon.lat;
+            longitudeTo = distLatLon.lon;
+            // degrees to radians.
+            longitudeFromRad =  longitudeFrom * Math.PI / 180;
+            longitudeToRad = longitudeTo * Math.PI / 180;
+            latitudeFromRad = latitudeFrom * Math.PI / 180;
+            latitudeToRad = latitudeTo * Math.PI / 180;
+            
+            // Haversine formula 
+            let dlon = longitudeToRad - longitudeFromRad; 
+            let dlat = latitudeToRad - latitudeFromRad;
+            let a = Math.pow(Math.sin(dlat / 2), 2)
+                     + Math.cos(latitudeFromRad) * Math.cos(latitudeToRad)
+                     * Math.pow(Math.sin(dlon / 2),2);
+            
+            let c = 2 * Math.asin(Math.sqrt(a));
+            
+            // Radius of earth in kilometers.
+            let r = 6371;
+            
+            let res = Math.round(c * r * 1000)/1000;
+            allDistrictWithDistance.push({district:distLatLon.district, distance:res});
+            districtWithDistance = [];
+        });
+    
+        allDistrictWithDistance.sort(sortFunction);
+    }
 
-    allDistExceptOne.forEach((distLatLon)=>{
-        latitudeTo = distLatLon.lat;
-        longitudeTo = distLatLon.lon;
-        // degrees to radians.
-        longitudeFromRad =  longitudeFrom * Math.PI / 180;
-        longitudeToRad = longitudeTo * Math.PI / 180;
-        latitudeFromRad = latitudeFrom * Math.PI / 180;
-        latitudeToRad = latitudeTo * Math.PI / 180;
-        
-        // Haversine formula 
-        let dlon = longitudeToRad - longitudeFromRad; 
-        let dlat = latitudeToRad - latitudeFromRad;
-        let a = Math.pow(Math.sin(dlat / 2), 2)
-                 + Math.cos(latitudeFromRad) * Math.cos(latitudeToRad)
-                 * Math.pow(Math.sin(dlon / 2),2);
-        
-        let c = 2 * Math.asin(Math.sqrt(a));
-        
-        // Radius of earth in kilometers.
-        let r = 6371;
-        
-        let res = Math.round(c * r * 1000)/1000;
-        allDistrictWithDistance.push({district:distLatLon.district, distance:res});
-        districtWithDistance = [];
-    });
-
-    allDistrictWithDistance.sort(sortFunction);
     return(res.json({allDistrictWithDistance}));
 }
 
@@ -60,12 +69,12 @@ function sortFunction(a, b) {
     }
 }
 
-async function apiProximity(req,res,next){
+function apiProximity(data){
     
     let proximityLoc = geoSpatial_district_states.find({
         location:{
             $near:{
-                $geometry:{ type:"Point", coordinates:[72.832678,19.054135]},
+                $geometry:{ type:"Point", coordinates:[data.longitudeFrom,data.latitudeFrom]},
                 $minDistance:"100000",
                 $maxDistance: "500000"
             }
