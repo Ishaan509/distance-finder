@@ -69,6 +69,19 @@
     transform: rotate(45deg);
 }
 
+/* Disabled checkbox */
+.sliderToggle input[type="checkbox"]:disabled {
+    background-color: #cccccc;
+    border-color: #bbbbbb;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.sliderToggle label:has(input[type="checkbox"]:disabled) {
+    color: #aaaaaa;
+    cursor: not-allowed;
+}
+
 /* Slider container */
 .sliderContainer {
     display: flex;

@@ -13,6 +13,8 @@ function DistrictList(props) {
     const [sliderValue, setSliderValue] = useState(0);
 
     const states = props.statesDis;
+    let selectedState = props.selectedValue;
+    console.log("State: "+selectedState);
 
     function handleChange(event) {
         let valueSelected = event.target.value;
@@ -20,6 +22,7 @@ function DistrictList(props) {
     }
 
     function handleCheckboxChange(event) {
+        //Call api to get maximum distance and store it.
         setSliderEnabled(event.target.checked);
     }
 
@@ -28,9 +31,9 @@ function DistrictList(props) {
     }
 
     async function handleSubmit() {
-        if (props.selectedValue != "Select" && SelDisValue != "Select") {
+        if (selectedState != "Select" && SelDisValue != "Select") {
             const payload = {
-                stateF: props.selectedValue,
+                stateF: selectedState,
                 districtF: SelDisValue,
                 sliderFlag: sliderEnabled,
                 ...(sliderEnabled && { sliderValue })
@@ -52,20 +55,22 @@ function DistrictList(props) {
     useEffect(() => {
         setSelDisValue("Select");
         setResultCheck(false);
-    }, [props.selectedValue]);
+    }, [selectedState]);
+
+    console.log("District: "+SelDisValue);
 
     return (
         <div>
             <div id="Dlist">
-                <h1>Selected District: {(props.selectedValue == "Select") ? "Not Selected" : (SelDisValue == "Select") ? "Not Selected" : SelDisValue}</h1>
+                <h1>Selected District: {(selectedState == "Select") ? "Not Selected" : (SelDisValue == "Select") ? "Not Selected" : SelDisValue}</h1>
                 <label id="districtLabel" htmlFor="district">Select District:</label>
 
                 <select id="district" onChange={handleChange}>
                     <option id="0" value="Select">Select</option>
-                    {(props.selectedValue == "Select") ? null :
+                    {(selectedState == "Select") ? null :
                         states.map((element) => {
                             const { state, districts } = element;
-                            if (state == props.selectedValue) {
+                            if (state == selectedState) {
                                 return (
                                     districts.map((district, index) => {
                                         return (<option key={index + 1} id={index + 1} value={district}>{district}</option>);
@@ -75,13 +80,14 @@ function DistrictList(props) {
                         })
                     }
                 </select>
-
+                
                 {/* Checkbox to toggle slider */}
                 <div className="sliderToggle">
                     <label htmlFor="sliderCheckbox">
                         <input
                             type="checkbox"
                             id="sliderCheckbox"
+                            disabled = {(selectedState == "Select" || SelDisValue == "Select") ? true : false}
                             checked={sliderEnabled}
                             onChange={handleCheckboxChange}
                         />
