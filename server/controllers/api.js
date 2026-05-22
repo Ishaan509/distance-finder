@@ -6,6 +6,48 @@ async function apiGet (req,res,next){
     return(res.json({"message" : "Hello form Backend!!"}));
 }
 
+async function apiMaxDistance (req,res,next){
+    let districtWithDistance = [];
+    let latitudeFrom,longitudeFrom,latitudeTo,longitudeTo;
+    let latitudeFromRad,longitudeFromRad,latitudeToRad,longitudeToRad;
+    let selState = req.body.payload.stateF;
+    let selDistrict = req.body.payload.districtF;
+
+    let allDistExceptOne = await districts_states.find({state:selState, district:{$nin : [selDistrict]}});
+    let oneDist = await districts_states.find({state:selState,district : selDistrict});
+
+    latitudeFrom = oneDist[0].lat;
+    longitudeFrom = oneDist[0].lon;
+
+    let allDistrictWithDistance=[];
+    let max = -1;
+    allDistExceptOne.forEach((distLatLon)=>{
+            latitudeTo = distLatLon.lat;
+            longitudeTo = distLatLon.lon;
+            // degrees to radians.
+            longitudeFromRad =  longitudeFrom * Math.PI / 180;
+            longitudeToRad = longitudeTo * Math.PI / 180;
+            latitudeFromRad = latitudeFrom * Math.PI / 180;
+            latitudeToRad = latitudeTo * Math.PI / 180;
+            
+            // Haversine formula 
+            let dlon = longitudeToRad - longitudeFromRad; 
+            let dlat = latitudeToRad - latitudeFromRad;
+            let a = Math.pow(Math.sin(dlat / 2), 2)
+                     + Math.cos(latitudeFromRad) * Math.cos(latitudeToRad)
+                     * Math.pow(Math.sin(dlon / 2),2);
+            
+            let c = 2 * Math.asin(Math.sqrt(a));
+            
+            // Radius of earth in kilometers.
+            let r = 6371;
+            
+            let res = Math.round(c * r * 1000)/1000;
+            if(res > max){ max = res; }
+        });
+    return(res.json({"maxDist" : max}));
+}
+
 async function apiPost (req,res,next){
     let districtWithDistance = [];
     let latitudeFrom,longitudeFrom,latitudeTo,longitudeTo;
@@ -70,20 +112,23 @@ function sortFunction(a, b) {
 }
 
 function apiProximity(data){
-    
-    let proximityLoc = geoSpatial_district_states.find({
-        location:{
-            $near:{
-                $geometry:{ type:"Point", coordinates:[data.longitudeFrom,data.latitudeFrom]},
-                $minDistance:"100000",
-                $maxDistance: "500000"
+
+    if(data.sliderFlag){
+        let proximityLoc = geoSpatial_district_states.find({
+            location:{
+                $near:{
+                    $geometry:{ type:"Point", coordinates:[data.longitudeFrom,data.latitudeFrom]},
+                    $minDistance:"100000",
+                    $maxDistance: "500000"
+                }
             }
-        }
-    });
+        });
+    }
     
     proximityLoc.then(val => {
         console.log(val);
+        return val;
     });
 }
 
-module.exports = {apiGet , apiPost};
+module.exports = {apiGet , apiPost, apiMaxDistance};
