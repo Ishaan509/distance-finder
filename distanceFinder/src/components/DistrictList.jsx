@@ -79,11 +79,7 @@ function DistrictList(props) {
       <div id="Dlist">
         <h1>
           Selected District:{" "}
-          {selectedState == "Select"
-            ? "Not Selected"
-            : SelDisValue == "Select"
-              ? "Not Selected"
-              : SelDisValue}
+          {selectedState == "Select" ? "Not Selected" : SelDisValue == "Select" ? "Not Selected" : SelDisValue}
         </h1>
         <label id="districtLabel" htmlFor="district">
           Select District:
@@ -115,11 +111,7 @@ function DistrictList(props) {
             <input
               type="checkbox"
               id="sliderCheckbox"
-              disabled={
-                selectedState == "Select" || SelDisValue == "Select"
-                  ? true
-                  : false
-              }
+              disabled={ selectedState == "Select" || SelDisValue == "Select" ? true : false }
               checked={sliderEnabled}
               onChange={handleCheckboxChange}
             />
