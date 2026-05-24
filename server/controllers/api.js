@@ -7,11 +7,12 @@ async function apiGet (req,res,next){
 }
 
 async function apiMaxDistance (req,res,next){
+    
     let districtWithDistance = [];
     let latitudeFrom,longitudeFrom,latitudeTo,longitudeTo;
     let latitudeFromRad,longitudeFromRad,latitudeToRad,longitudeToRad;
-    let selState = req.body.payload.stateF;
-    let selDistrict = req.body.payload.districtF;
+    let selState = req.body.stateF;
+    let selDistrict = req.body.districtF;
 
     let allDistExceptOne = await districts_states.find({state:selState, district:{$nin : [selDistrict]}});
     let oneDist = await districts_states.find({state:selState,district : selDistrict});

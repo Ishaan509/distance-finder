@@ -135,6 +135,36 @@
     cursor: pointer;
 }
 
+/* Slider midpoint marker */
+/* .sliderContainer input[type="range"]::-webkit-slider-runnable-track {
+    position: relative;
+}
+
+.sliderContainer datalist {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+    pointer-events: none;
+}
+
+.sliderContainer datalist option {
+    display: flex;
+    justify-content: center;
+    padding: 0;
+    position: relative;
+}
+
+.sliderContainer datalist option::before {
+    content: '|';
+    position: absolute;
+    top: -22px;
+    color: #4d5061;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1;
+} */
+
 .buttonStyle {
     appearance: none;
     background-color: #000000;

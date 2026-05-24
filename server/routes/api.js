@@ -5,7 +5,7 @@ const router = express.Router();
 
 router
 .get("/",apiGet)
-.get("/distFetch", apiMaxDistance)
+.post("/distFetch", apiMaxDistance)
 .post("/",apiPost);
 
 module.exports = router;
