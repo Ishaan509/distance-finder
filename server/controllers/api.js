@@ -1,6 +1,23 @@
+const winston = require('winston');
 const districts_states = require("../models/districtsStates");
 const geoSpatial_district_states = require("../models/geoDistrictStates");
 
+const { combine, timestamp, prettyPrint, errors } = winston.format;
+
+const logger = winston.createLogger({
+  format: combine(
+    errors({stack:true}),
+    timestamp(),
+    // json(),
+    prettyPrint()
+  ),
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({filename: 'distanceFinderBackend.log', level:'info'})
+]
+})
+
+logger.info("Entered the class");
 
 async function apiGet (req,res,next){
     return(res.json({"message" : "Hello form Backend!!"}));
